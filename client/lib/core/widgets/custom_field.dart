@@ -11,7 +11,7 @@ class CustomField extends StatelessWidget {
       required this.hintText,
       required this.controller,
       this.isObscure = false,
-      this.isReadOnly = true,
+      this.isReadOnly = false,
       this.onTap});
 
   @override
