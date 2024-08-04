@@ -18,3 +18,5 @@ def auth_middleware(x_auth_token= Header()):
        # get user data from postgres sql
     except jwt.PyJWTError:
       raise HTTPException(401,'Token is not valid , authorization failed')
+  
+ 
