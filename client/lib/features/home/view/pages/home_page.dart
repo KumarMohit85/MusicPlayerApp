@@ -3,6 +3,7 @@ import 'package:client/core/theme/app_palette.dart';
 import 'package:client/features/home/view/pages/library_page.dart';
 import 'package:client/features/home/view/pages/songs_page.dart';
 import 'package:client/features/home/view/pages/upload_song_page.dart';
+import 'package:client/features/home/view/widgets/music_slab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,7 +24,13 @@ class _HomepageState extends ConsumerState<Homepage> {
     print(user);
 
     return Scaffold(
-      body: pages[selectedIndex],
+      body: Stack(children: [
+        pages[selectedIndex],
+        const Positioned(
+          child: MusicSlab(),
+          bottom: 0,
+        )
+      ]),
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,
           onTap: (value) {
