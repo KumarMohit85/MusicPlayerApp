@@ -6,16 +6,40 @@ part 'current_song_notifier.g.dart';
 @riverpod
 class CurrentSongNotifier extends _$CurrentSongNotifier {
   AudioPlayer? audioPlayer;
+  bool isPlaying = false;
   @override
   SongModel? build() {
     return null;
   }
 
   void updateSong(SongModel song) async {
+    print("update song called");
     audioPlayer = AudioPlayer();
     final audioSource = AudioSource.uri(Uri.parse(song.song_url));
     await audioPlayer!.setAudioSource(audioSource);
-    await audioPlayer!.play();
+
+    audioPlayer!.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        audioPlayer!.seek(Duration.zero);
+        audioPlayer!.pause();
+        isPlaying = false;
+
+        this.state = this.state?.copyWith(hex_code: this.state?.hex_code);
+      }
+    });
+    audioPlayer!.play();
+    isPlaying = true;
+    print("updating state");
     state = song;
+  }
+
+  void playPause() {
+    if (isPlaying) {
+      audioPlayer!.pause();
+    } else
+      audioPlayer!.play();
+
+    isPlaying = !isPlaying;
+    state = state?.copyWith(hex_code: state?.hex_code);
   }
 }
