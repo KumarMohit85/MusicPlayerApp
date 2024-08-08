@@ -10,10 +10,24 @@ class SongsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final recentlyPlayedSongs =
+        ref.watch(homeViewmodelProvider.notifier).getRecentlyPlayedSongs();
+
     return SafeArea(
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(
+          height: 280,
+          child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 3,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8),
+              itemCount: recentlyPlayedSongs.length,
+              itemBuilder: (context, index) {}),
+        ),
         const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(

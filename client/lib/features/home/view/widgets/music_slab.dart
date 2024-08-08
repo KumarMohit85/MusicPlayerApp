@@ -20,8 +20,18 @@ class MusicSlab extends ConsumerWidget {
     print("current song is not null");
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
           return MusicPlayer();
+        }, transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final tween = Tween(begin: Offset(0, 1), end: Offset.zero)
+              .chain(CurveTween(curve: Curves.easeIn));
+
+          final offsetAnimation = animation.drive(tween);
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
         }));
       },
       child: Stack(
@@ -37,16 +47,19 @@ class MusicSlab extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 48,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              currentSong.thumbnail_url,
+                    Hero(
+                      tag: 'music-image',
+                      child: Container(
+                        width: 48,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                currentSong.thumbnail_url,
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.circular(5)),
+                            borderRadius: BorderRadius.circular(5)),
+                      ),
                     ),
                     const SizedBox(
                       width: 8,

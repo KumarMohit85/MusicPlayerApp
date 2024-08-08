@@ -1,5 +1,6 @@
 import 'package:client/core/providers/current_song_notifier.dart';
 import 'package:client/core/theme/app_palette.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/features/home/model/song_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,21 +12,53 @@ class MusicPlayer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentSong = ref.watch(currentSongNotifierProvider);
-    return Padding(
+    final songNotifier = ref.watch(currentSongNotifierProvider.notifier);
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [hexToColor(currentSong!.hex_code), const Color(0xff121212)],
+      )),
       child: Scaffold(
+        backgroundColor: Pallete.transparentColor,
+        appBar: AppBar(
+          backgroundColor: Pallete.transparentColor,
+          leading: Transform.translate(
+            offset: const Offset(-15, 0),
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              highlightColor: Pallete.transparentColor,
+              focusColor: Pallete.transparentColor,
+              splashColor: Pallete.transparentColor,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  'assets/images/pull-down-arrow.png',
+                  color: Pallete.whiteColor,
+                ),
+              ),
+            ),
+          ),
+        ),
         body: Column(
           children: [
             Expanded(
               flex: 5,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 30.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: NetworkImage(currentSong!.thumbnail_url),
-                          fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(20)),
+                child: Hero(
+                  tag: 'music-image',
+                  child: Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(currentSong!.thumbnail_url),
+                            fit: BoxFit.cover),
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
                 ),
               ),
             ),
@@ -59,107 +92,139 @@ class MusicPlayer extends ConsumerWidget {
                           onPressed: () {}, icon: Icon(CupertinoIcons.heart))
                     ],
                   ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  StreamBuilder(
+                      stream: songNotifier!.audioPlayer!.positionStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox();
+                        }
+
+                        final position = snapshot.data;
+                        final duration = songNotifier.audioPlayer!.duration;
+                        double sliderValue = 0.0;
+                        if (position != null && duration != null) {
+                          sliderValue =
+                              position.inMilliseconds / duration.inMilliseconds;
+                        }
+
+                        return Column(
+                          children: [
+                            SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                  activeTrackColor: Pallete.whiteColor,
+                                  inactiveTrackColor:
+                                      Pallete.whiteColor.withOpacity(0.117),
+                                  thumbColor: Pallete.whiteColor,
+                                  trackHeight: 4,
+                                  overlayShape: SliderComponentShape.noOverlay),
+                              child: Slider(
+                                value: sliderValue,
+                                min: 0,
+                                max: 1,
+                                onChanged: (val) {
+                                  sliderValue = val;
+                                },
+                                onChangeEnd: (val) {
+                                  songNotifier.seek(val);
+                                },
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${position?.inMinutes}:${((position?.inSeconds ?? 0) % 60).toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                      color: Pallete.subtitleText,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                                Text(
+                                  '${duration?.inMinutes}:${((duration?.inSeconds ?? 0) % 60).toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                      color: Pallete.subtitleText,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w300),
+                                )
+                              ],
+                            ),
+                          ],
+                        );
+                      }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/images/shuffle.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/images/previous-song.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: songNotifier.playPause,
+                        icon: Icon(songNotifier.isPlaying
+                            ? CupertinoIcons.pause_circle_fill
+                            : CupertinoIcons.play_circle_fill),
+                        iconSize: 80,
+                        color: Pallete.whiteColor,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/images/next-song.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/images/repeat.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/images/connect-device.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                      Expanded(child: const SizedBox()),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Image.asset(
+                          'assets/images/playlist.png',
+                          color: Pallete.whiteColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-            Column(
-              children: [
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: Pallete.whiteColor,
-                      inactiveTrackColor: Pallete.whiteColor.withOpacity(0.117),
-                      thumbColor: Pallete.whiteColor,
-                      trackHeight: 4,
-                      overlayShape: SliderComponentShape.noOverlay),
-                  child: Slider(
-                    value: 0.5,
-                    onChanged: (val) {},
-                  ),
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '0.05',
-                  style: TextStyle(
-                      color: Pallete.subtitleText,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w300),
-                ),
-                Text(
-                  '0.15',
-                  style: TextStyle(
-                      color: Pallete.subtitleText,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w300),
-                )
-              ],
             ),
             const SizedBox(
               height: 15,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    'assets/images/shuffle.png',
-                    color: Pallete.whiteColor,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    'assets/images/previous-song.png',
-                    color: Pallete.whiteColor,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(CupertinoIcons.play_circle_fill),
-                  iconSize: 80,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    'assets/images/next-song.png',
-                    color: Pallete.whiteColor,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    'assets/images/repeat.png',
-                    color: Pallete.whiteColor,
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(
               height: 25,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    'assets/images/connect-device.png',
-                    color: Pallete.whiteColor,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset(
-                    'assets/images/playlist.png',
-                    color: Pallete.whiteColor,
-                  ),
-                ),
-              ],
-            )
           ],
         ),
       ),
