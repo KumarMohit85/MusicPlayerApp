@@ -13,7 +13,8 @@ part 'home_viewmodel.g.dart';
 
 @riverpod
 Future<List<SongModel>> getAllSongs(GetAllSongsRef ref) async {
-  final token = ref.watch(currentUserNotifierProvider)!.token;
+  final token =
+      ref.watch(currentUserNotifierProvider.select((user) => user!.token));
   final res = await ref.watch(homeRepositoryProvider).getAllSongs(token: token);
 
   return switch (res) {
@@ -81,15 +82,29 @@ class HomeViewmodel extends _$HomeViewmodel {
     final val = switch (res) {
       Left(value: final l) => state =
           AsyncValue.error(l.message, StackTrace.current),
-      Right(value: final r) => state = AsyncValue.data(r),
+      Right(value: final r) => state = _favSongSuccess(r, songId),
     };
   }
 
   AsyncValue _favSongSuccess(bool isFavorited, String songId) {
-    final userNotifier =
-        ref.read(currentUserNotifierProvider)!.copyWith(favorites: [...ref.read(currentUserNotifierProvider)!.favorites, FavSongModel(id: '', song_id: songId, user_id: '')]);
-      else{
-        
-      }
+    final userNotifier = ref.read(currentUserNotifierProvider.notifier);
+
+    if (isFavorited) {
+      userNotifier
+          .addUser(ref.read(currentUserNotifierProvider)!.copyWith(favorites: [
+        ...ref.read(currentUserNotifierProvider)!.favorites,
+        FavSongModel(id: '', song_id: songId, user_id: '')
+      ]));
+    } else {
+      userNotifier.addUser(ref.read(currentUserNotifierProvider)!.copyWith(
+            favorites: ref
+                .read(currentUserNotifierProvider)!
+                .favorites
+                .where((fav) => fav.song_id != songId)
+                .toList(),
+          ));
+    }
+    ref.invalidate(getFavSongsProvider);
+    return state = AsyncValue.data(isFavorited);
   }
 }
