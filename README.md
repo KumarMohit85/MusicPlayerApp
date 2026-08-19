@@ -7,8 +7,8 @@ A production-grade, full-stack music streaming platform engineered with **Flutte
 ## 📱 Screen Showcase & Feature Walkthrough
 
 ### 1. Home Dashboard & Content Discovery
-![Home Screen Top](public/music_player/home_design_top.png)
-![Home Screen Bottom](public/music_player/home_design_bottom.png)
+![Home Screen Top](https://raw.githubusercontent.com/KumarMohit85/Mohit_Portfolio/main/public/music_player/homepage_1.jpeg)
+![Home Screen Bottom](https://raw.githubusercontent.com/KumarMohit85/Mohit_Portfolio/main/public/music_player/homepage_2.jpeg)
 
 * **Top Greeting & Quick Actions**: Time-aware `"Good evening"` header with instant search access and sub-labels.
 * **Recently Played 2-Column Grid**: Loads recently played tracks cached locally in **HiveDB** for instant offline retrieval.
@@ -18,7 +18,7 @@ A production-grade, full-stack music streaming platform engineered with **Flutte
 ---
 
 ### 2. Personal Library & Real-Time Favorites
-![Library Screen](public/music_player/library_screen.jpg)
+![Library Screen](https://raw.githubusercontent.com/KumarMohit85/Mohit_Portfolio/main/public/music_player/library_screen.jpeg)
 
 * **Curated Favorites Collection**: Real-time list of liked tracks with instant heart toggle controls (`CupertinoIcons.heart_fill`).
 * **Live Counter Badge**: Real-time track count badge (`Favorite Tracks 2`).
@@ -28,8 +28,8 @@ A production-grade, full-stack music streaming platform engineered with **Flutte
 ---
 
 ### 3. Creator Studio - Upload Music
-![Upload Screen Top](public/music_player/upload_design_top.png)
-![Upload Screen Bottom](public/music_player/upload_design_bottom.png)
+![Upload Screen Top](https://raw.githubusercontent.com/KumarMohit85/Mohit_Portfolio/main/public/music_player/upload_music.jpeg)
+![Upload Screen Bottom](https://raw.githubusercontent.com/KumarMohit85/Mohit_Portfolio/main/public/music_player/upload_music_2.jpeg)
 
 * **Audio Dropzone with Waveform Visualizer**: Dashed dropzone supporting MP3/WAV/FLAC audio files up to 50MB with instant waveform preview via `audio_waveforms`.
 * **Thumbnail Cover Art Selector**: High-res album art picker with live image preview.
@@ -39,7 +39,7 @@ A production-grade, full-stack music streaming platform engineered with **Flutte
 ---
 
 ### 4. Background Audio Player & Persistent Mini-Player Bar
-![Player Slab](public/music_player/home_screen.jpg)
+![Player Slab](https://raw.githubusercontent.com/KumarMohit85/Mohit_Portfolio/main/public/music_player/music_player.jpeg)
 
 * **Pinned Bottom Mini-Player (`MusicSlab`)**: Stays permanently pinned directly above the bottom navigation bar across all tabs (`Home`, `Upload`, `Library`).
 * **Live Position Tracking**: Real-time position progress bar driven by `StreamBuilder` position streams.
@@ -108,4 +108,5 @@ flutter run
 
 ## 👤 Author
 * **GitHub**: [KumarMohit85](https://github.com/KumarMohit85)
+* **Portfolio**: [Mohit_Portfolio](https://github.com/KumarMohit85/Mohit_Portfolio)
 * **Repository**: [MusicPlayerApp](https://github.com/KumarMohit85/MusicPlayerApp)
