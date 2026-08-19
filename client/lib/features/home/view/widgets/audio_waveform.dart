@@ -34,12 +34,13 @@ class _AudioWaveformState extends State<AudioWaveform> {
 
   Future<void> playAndPause() async {
     if (!playerController.playerState.isPlaying) {
-      await playerController.startPlayer(finishMode: FinishMode.stop);
+      await playerController.startPlayer();
     } else if (!playerController.playerState.isPaused) {
       await playerController.pausePlayer();
     }
     setState(() {});
   }
+
 
   @override
   Widget build(BuildContext context) {

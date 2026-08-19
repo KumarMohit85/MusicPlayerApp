@@ -32,13 +32,14 @@ class AuthViewModel extends _$AuthViewModel {
     final res = await _authRemoteRepository.SignUp(
         name: name, email: email, password: password);
 
-    final val = switch (res) {
-      Left(value: final l) => state =
-          AsyncValue.error(l.message, StackTrace.current),
-      Right(value: final r) => state = AsyncValue.data(r)
-    };
-    print(val);
+    switch (res) {
+      case Left(value: final l):
+        state = AsyncValue.error(l.message, StackTrace.current);
+      case Right(value: final r):
+        await LoginUser(email: email, password: password);
+    }
   }
+
 
   Future<void> LoginUser(
       {required String email, required String password}) async {
@@ -72,7 +73,7 @@ class AuthViewModel extends _$AuthViewModel {
             AsyncValue.error(l.message, StackTrace.current),
         Right(value: final r) => _getDataSuccess(r),
       };
-      return val.value;
+      return val.valueOrNull;
     }
     return null;
   }

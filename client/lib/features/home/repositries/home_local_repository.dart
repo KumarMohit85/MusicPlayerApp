@@ -11,18 +11,31 @@ HomeLocalRepository homeLocalRepository(HomeLocalRepositoryRef ref) {
 }
 
 class HomeLocalRepository {
-  final Box box = Hive.box();
-
-  void uploadLocalSong(SongModel song) {
-    box.put(song.id, song.toJson());
+  void uploadLocalSong(SongModel song) async {
+    try {
+      final box = Hive.isBoxOpen('songs')
+          ? Hive.box('songs')
+          : await Hive.openBox('songs');
+      box.put(song.id, song.toJson());
+    } catch (_) {}
   }
 
   List<SongModel> loadSongs() {
     List<SongModel> songs = [];
-    for (final key in box.keys) {
-      songs.add(SongModel.fromJson(box.get(key)));
-    }
+    try {
+      if (Hive.isBoxOpen('songs')) {
+        final box = Hive.box('songs');
+        for (final key in box.keys) {
+          final val = box.get(key);
+          if (val != null) {
+            songs.add(SongModel.fromJson(val));
+          }
+        }
+      }
+    } catch (_) {}
 
     return songs;
   }
 }
+
+

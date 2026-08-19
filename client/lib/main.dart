@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/theme/theme.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
@@ -11,13 +12,17 @@ import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-  );
-  final dir = await getApplicationDocumentsDirectory();
-  Hive.defaultDirectory = dir.path;
+  if (!kIsWeb) {
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+      androidNotificationChannelName: 'Audio playback',
+      androidNotificationOngoing: true,
+    );
+    final dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+  }
+
+
   final container = ProviderContainer();
   await container.read(authViewModelProvider.notifier).initSharedPreferences();
   final userModel =
@@ -25,6 +30,7 @@ void main() async {
   print(userModel);
   runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }
+
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});

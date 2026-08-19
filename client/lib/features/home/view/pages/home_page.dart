@@ -16,23 +16,29 @@ class Homepage extends ConsumerStatefulWidget {
 
 class _HomepageState extends ConsumerState<Homepage> {
   int selectedIndex = 0;
-  final pages = const [SongsPage(), LibraryPage()];
+  final pages = const [SongsPage(), UploadSongPage(), LibraryPage()];
+
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(currentUserNotifierProvider);
-
-    print(user);
-
     return Scaffold(
-      body: Stack(children: [
-        pages[selectedIndex],
-        const Positioned(
-          child: MusicSlab(),
-          bottom: 0,
-        )
-      ]),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          pages[selectedIndex],
+          const Positioned(
+            bottom: 0,
+            left: 8,
+            right: 8,
+            child: MusicSlab(),
+          )
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,
+          selectedItemColor: Pallete.limeColor,
+          unselectedItemColor: Pallete.inactiveBottomBarItemColor,
+          backgroundColor: Pallete.backgroundColor,
+          type: BottomNavigationBarType.fixed,
           onTap: (value) {
             setState(() {
               selectedIndex = value;
@@ -40,23 +46,27 @@ class _HomepageState extends ConsumerState<Homepage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  selectedIndex == 0
-                      ? 'assets/images/home_filled.png'
-                      : 'assets/images/home_unfilled.png',
-                  color: selectedIndex == 0
-                      ? Pallete.whiteColor
-                      : Pallete.inactiveBottomBarItemColor,
+                icon: Icon(
+                  selectedIndex == 0 ? Icons.home_filled : Icons.home_outlined,
+                  size: 26,
                 ),
                 label: 'Home'),
             BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/images/library.png',
-                  color: selectedIndex == 1
-                      ? Pallete.whiteColor
-                      : Pallete.inactiveBottomBarItemColor,
+                icon: Icon(
+                  selectedIndex == 1
+                      ? Icons.file_upload
+                      : Icons.file_upload_outlined,
+                  size: 26,
                 ),
-                label: 'library'),
+                label: 'Upload'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  selectedIndex == 2
+                      ? Icons.library_music
+                      : Icons.library_music_outlined,
+                  size: 26,
+                ),
+                label: 'Library'),
           ]),
     );
   }

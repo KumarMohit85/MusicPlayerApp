@@ -1,16 +1,22 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 
+load_dotenv()
 
-DATABASE_URL= 'postgresql://@localhost:5432/fluttermusicapp'
-engine= create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False,autoflush=False, bind=engine)
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///./musicapp.db')
+
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
-    db= SessionLocal()
+    db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-        
-        

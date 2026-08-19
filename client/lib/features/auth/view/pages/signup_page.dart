@@ -2,6 +2,7 @@ import 'package:client/core/theme/app_palette.dart';
 import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
 
+import 'package:client/features/home/view/pages/home_page.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/core/widgets/custom_field.dart';
@@ -38,16 +39,18 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     ref.listen(authViewModelProvider, (_, next) {
       next?.when(
           data: (data) {
-            showSnackBar(context, "Account created successfully");
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return const LoginPage();
-            }));
+            showSnackBar(context, "Welcome to Music Player!");
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) {
+              return const Homepage();
+            }), (_) => false);
           },
           error: (error, st) {
             showSnackBar(context, error.toString());
           },
           loading: () {});
     });
+
     return Scaffold(
       appBar: AppBar(),
       body: isLoading

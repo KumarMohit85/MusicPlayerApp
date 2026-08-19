@@ -42,7 +42,7 @@ Future<File?> pickImage() async {
 }
 
 String rgbToHex(Color color) {
-  return '${color.red.toRadixString(16).padLeft(2, '0')}${color.green.toRadixString(16).padLeft(2, '0')}${color.blue.toRadixString(16).padLeft(2, '0')}';
+  return '${(color.r * 255).round().toRadixString(16).padLeft(2, '0')}${(color.g * 255).round().toRadixString(16).padLeft(2, '0')}${(color.b * 255).round().toRadixString(16).padLeft(2, '0')}';
 }
 
 Color hexToColor(String hex) {

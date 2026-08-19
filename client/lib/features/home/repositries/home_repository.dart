@@ -36,10 +36,17 @@ class HomeRepository {
         ..headers.addAll({'x-auth-token': token});
 
       final res = await request.send();
+      final resBody = await res.stream.bytesToString();
+
       if (res.statusCode != 201) {
-        return Left((Failure(await res.stream.bytesToString())));
+        try {
+          final resMap = jsonDecode(resBody) as Map<String, dynamic>;
+          return Left(Failure(resMap['detail'] ?? resBody));
+        } catch (_) {
+          return Left(Failure(resBody));
+        }
       }
-      return Right(await res.stream.bytesToString());
+      return Right(resBody);
     } catch (e) {
       return Left(Failure(e.toString()));
     }

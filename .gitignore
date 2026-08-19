@@ -1,0 +1,33 @@
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+client/build/
+client/.dart_tool/
+
+# Python / Server
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+venv_win/
+server/__pycache__/
+server/middlewares/__pycache__/
+server/models/__pycache__/
+server/pydantic_schemas/__pycache__/
+server/routes/__pycache__/
+server/musicapp.db
+server/.env
+
+# IDE & System
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.log

@@ -43,9 +43,12 @@ dependencies:
   dotted_border: ^2.1.0
   flex_color_picker: ^3.5.1
   file_picker: ^8.0.6
-  audio_waveforms: ^1.0.5
-  just_audio: ^0.9.39
-  hive: ^4.0.0-dev.2
+  audio_waveforms: ^2.0.2
+
+  just_audio: ^0.9.44
+  just_audio_web: ^0.4.16
+  hive: ^2.2.3
+
   isar_flutter_libs: ^4.0.0-dev.13
   path_provider: ^2.1.0
   just_audio_background: ^0.0.1-beta.13

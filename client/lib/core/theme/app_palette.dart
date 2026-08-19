@@ -17,4 +17,5 @@ class Pallete {
   static const Color transparentColor = Colors.transparent;
 
   static const Color inactiveSeekColor = Colors.white38;
+  static const Color limeColor = Color(0xFFC6FF00);
 }
